@@ -70,3 +70,5 @@ pipeline {
                  body: "Hubo un fallo en el build. Ver detalles: ${env.BUILD_URL}"
         }
     }
+
+}
