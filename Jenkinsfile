@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+        nodejs "node18"  // Asegúrate que coincida con el nombre que configuraste en Jenkins
+    }
+
     environment {
         VERCEL_TOKEN = credentials('vercel-token')  // ID de la credencial en Jenkins
     }
@@ -8,7 +12,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm  // Jenkins ya sabe la rama actual
+                checkout scm
             }
         }
 
@@ -23,8 +27,9 @@ pipeline {
                 sh 'npm run build'
             }
         }
-        stage('Test'){
-            steps{
+
+        stage('Test') {
+            steps {
                 sh 'npm test'
             }
         }
@@ -56,6 +61,7 @@ pipeline {
             }
         }
     }
+
     post {
         success {
             slackSend(channel: '#alertas', message: "✅ Build succeeded for ${env.JOB_NAME} #${env.BUILD_NUMBER}")
@@ -70,5 +76,4 @@ pipeline {
                  body: "Hubo un fallo en el build. Ver detalles: ${env.BUILD_URL}"
         }
     }
-
 }
