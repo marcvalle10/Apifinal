@@ -25,13 +25,12 @@ describe("App", () => {
   });
 
   it("renders HMR instruction", () => {
-    render(<App />);
-    expect(
-      screen.getByText((content, element) =>
-        element.textContent.includes("Edit src/App.jsx and save to test HMR")
-      )
-    ).toBeInTheDocument();
-  });
+  render(<App />);
+  const matches = screen.getAllByText((_, element) =>
+    element.textContent.includes("Edit src/App.jsx and save to test HMR")
+  );
+  expect(matches.length).toBeGreaterThan(0);
+});
 
   it("renders custom message", () => {
     render(<App />);
