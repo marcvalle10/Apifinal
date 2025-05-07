@@ -44,7 +44,7 @@ pipeline {
 
                     echo "Current branch: ${branch}"
 
-                    if (branch == 'main' || branch == 'origin/main') {
+                    if (branch == 'master' || branch == 'origin/master') {
                         echo "Deploying to Vercel..."
                         def output = sh(
                             script: 'npx vercel --prod --token=$VERCEL_TOKEN --yes --name=my-vite-app',
