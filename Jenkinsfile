@@ -2,11 +2,11 @@ pipeline {
     agent any
 
     tools {
-        nodejs "node23"  // Asegúrate que coincida con el nombre que configuraste en Jenkins
+        nodejs "node23"
     }
 
     environment {
-        VERCEL_TOKEN = credentials('vercel-token')  // ID de la credencial en Jenkins
+        VERCEL_TOKEN = credentials('vercel-token')
     }
 
     stages {
@@ -46,12 +46,10 @@ pipeline {
 
                     if (branch == 'main' || branch == 'origin/main') {
                         echo "Deploying to Vercel..."
-
                         def output = sh(
                             script: 'npx vercel --prod --token=$VERCEL_TOKEN --yes --name=my-vite-app',
                             returnStdout: true
                         ).trim()
-
                         def deploymentUrl = output.split('\n').find { it.contains("https") }
                         echo "Deployment URL: ${deploymentUrl}"
                     } else {
@@ -63,17 +61,37 @@ pipeline {
     }
 
     post {
-        success {
-            slackSend(channel: '#alertas', message: "✅ Build succeeded for ${env.JOB_NAME} #${env.BUILD_NUMBER}")
-            mail to: 'marcosvalle546@gmail.com,Danielams_6@hotmail.com,Genarohuertav11@gmail.com, Pabloarellano825@gmail.com',
-                 subject: "✅ Build exitoso: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: "El build fue exitoso. Ver: ${env.BUILD_URL}"
-        }
-        failure {
-            slackSend(channel: '#alertas', message: "❌ Build failed for ${env.JOB_NAME} #${env.BUILD_NUMBER}")
-            mail to: 'marcosvalle546@gmail.com,Danielams_6@hotmail.com,Genarohuertav11@gmail.com, Pabloarellano825@gmail.com',
-                 subject: "❌ Build fallido: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                 body: "Hubo un fallo en el build. Ver detalles: ${env.BUILD_URL}"
+        always {
+            script {
+                // Notificación a Slack con manejo de errores
+                try {
+                    slackSend(
+                        channel: '#alertas', 
+                        message: "${currentBuild.result == 'SUCCESS' ? '✅' : '❌'} Build ${currentBuild.result} for ${env.JOB_NAME} #${env.BUILD_NUMBER}"
+                    )
+                } catch (Exception e) {
+                    echo "Error sending Slack notification: ${e.message}"
+                }
+
+                // Notificación por correo con manejo de errores
+                try {
+                    if(currentBuild.result == 'SUCCESS') {
+                        mail(
+                            to: 'marcosvalle546@gmail.com,Danielams_6@hotmail.com,Genarohuertav11@gmail.com,Pabloarellano825@gmail.com',
+                            subject: "✅ Build exitoso: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                            body: "El build fue exitoso. Ver: ${env.BUILD_URL}"
+                        )
+                    } else {
+                        mail(
+                            to: 'marcosvalle546@gmail.com,Danielams_6@hotmail.com,Genarohuertav11@gmail.com,Pabloarellano825@gmail.com',
+                            subject: "❌ Build fallido: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                            body: "Hubo un fallo en el build. Ver detalles: ${env.BUILD_URL}"
+                        )
+                    }
+                } catch (Exception e) {
+                    echo "Error sending email notification: ${e.message}"
+                }
+            }
         }
     }
 }
