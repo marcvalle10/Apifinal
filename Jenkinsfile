@@ -77,13 +77,13 @@ pipeline {
                 try {
                     if(currentBuild.result == 'SUCCESS') {
                         emailext(
-                            to: 'marcosvalle546@gmail.com,Danielams_6@hotmail.com,Genarohuertav11@gmail.com,Pabloarellano825@gmail.com',
+                            to: 'marcosvalljo666@gmail.com,marcosvalle546@gmail.com,Danielams_6@hotmail.com,Genarohuertav11@gmail.com,Pabloarellano825@gmail.com',
                             subject: "✅ Build exitoso: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                             body: "El build fue exitoso. Ver: ${env.BUILD_URL}"
                         )
                     } else {
                         emailext(
-                            to: 'marcosvalle546@gmail.com,Danielams_6@hotmail.com,Genarohuertav11@gmail.com,Pabloarellano825@gmail.com',
+                            to: 'marcosvalljo666@gmail.com,marcosvalle546@gmail.com,Danielams_6@hotmail.com,Genarohuertav11@gmail.com,Pabloarellano825@gmail.com',
                             subject: "❌ Build fallido: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
                             body: "Hubo un fallo en el build. Ver detalles: ${env.BUILD_URL}"
                         )
