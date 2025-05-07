@@ -32,7 +32,7 @@ describe("App", () => {
   it("renders custom message", () => {
     render(<App />);
     expect(
-      screen.getByText(/El yorch está en su era pilates/i)
+      screen.getByText(/El pepin está en su era pilates/i)
     ).toBeInTheDocument();
   });
 });
