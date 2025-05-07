@@ -26,7 +26,7 @@ describe("App", () => {
 
   it("renders HMR instruction", () => {
     render(<App />);
-    expect(screen.getByText(/Edit .src\/App\.jsx./i)).toBeInTheDocument();
+    expect(   screen.getByText((content, element) =>     element.textContent.includes("Edit src/App.jsx and save to test HMR")   ) ).toBeInTheDocument();
   });
 
   it("renders custom message", () => {
